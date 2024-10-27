@@ -114,7 +114,7 @@ public class Main {
                             }
                         });
                         System.out.println();
-                        if (contentLength == tempFile.length()) {
+                        if (contentLength != tempFile.length()) {
                             System.out.println("下载失败: " + downloadUrl);
                             return;
                         }
