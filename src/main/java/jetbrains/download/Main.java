@@ -84,6 +84,13 @@ public class Main {
                     .setFollowRedirects(true)
 //                    .setHttpProxy("192.168.196.77",8888)
                     .then(res -> {
+                        int status = res.getStatus();
+
+                        if (status != 200) {
+                            System.out.println("status: " + status);
+                            return;
+                        }
+
                         inputStream.set(res.bodyStream());
                         long contentLength = res.contentLength();
                         outputStream.set(FileUtil.getOutputStream(tempFile));
