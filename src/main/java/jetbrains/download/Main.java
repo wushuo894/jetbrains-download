@@ -111,10 +111,14 @@ public class Main {
 
                             @Override
                             public void finish() {
-                                System.out.println();
-                                System.out.println(StrFormatter.format("下载完成：{}", downloadUrl));
                             }
                         });
+                        System.out.println();
+                        if (contentLength == tempFile.length()) {
+                            System.out.println("下载失败: " + downloadUrl);
+                            return;
+                        }
+                        System.out.println(StrFormatter.format("下载完成：{}", downloadUrl));
                         FileUtil.rename(tempFile, file.getName(), false);
                     });
         } catch (Exception e) {
