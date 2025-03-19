@@ -6,6 +6,7 @@ import cn.hutool.core.io.StreamProgress;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.log.Log;
 import com.google.gson.Gson;
@@ -54,12 +55,16 @@ public class Main {
                 File file = new File(
                         StrUtil.join(File.separator, downloadPath, platform, version, split.get(split.size() - 1))
                 );
-                download(file, downloadUrl);
+
+                String checksumLink = downloadInfo.get("checksumLink").getAsString();
+                String sha256 = HttpRequest.get(checksumLink)
+                        .thenFunction(res -> res.body().split(" ")[0]);
+                download(file, downloadUrl, sha256);
             }
         }
     }
 
-    public static void download(File file, String downloadUrl) {
+    public static void download(File file, String downloadUrl, String sha256) {
         if (file.exists()) {
             System.out.println(StrFormatter.format("{} 文件已存在！", file));
             return;
@@ -108,7 +113,8 @@ public class Main {
                             }
                         });
                         System.out.println();
-                        if (contentLength != tempFile.length()) {
+                        String tempSha256 = SecureUtil.sha256(tempFile);
+                        if (!tempSha256.equals(sha256)) {
                             System.out.println("下载失败: " + downloadUrl);
                             return;
                         }
