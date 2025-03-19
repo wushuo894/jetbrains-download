@@ -81,6 +81,13 @@ public class Main {
                     .setFollowRedirects(true)
 //                    .setHttpProxy("192.168.196.77",8888)
                     .then(res -> {
+                        int status = res.getStatus();
+
+                        if (status != 200) {
+                            System.out.println("status: " + status);
+                            return;
+                        }
+
                         inputStream.set(res.bodyStream());
                         long contentLength = res.contentLength();
                         outputStream.set(FileUtil.getOutputStream(tempFile));
@@ -101,10 +108,14 @@ public class Main {
 
                             @Override
                             public void finish() {
-                                System.out.println();
-                                System.out.println(StrFormatter.format("下载完成：{}", downloadUrl));
                             }
                         });
+                        System.out.println();
+                        if (contentLength != tempFile.length()) {
+                            System.out.println("下载失败: " + downloadUrl);
+                            return;
+                        }
+                        System.out.println(StrFormatter.format("下载完成：{}", downloadUrl));
                         FileUtil.rename(tempFile, file.getName(), false);
                     });
         } catch (Exception e) {
