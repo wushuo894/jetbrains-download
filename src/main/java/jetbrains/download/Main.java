@@ -26,7 +26,7 @@ public class Main {
 
     public static void main(String[] args) {
         // 下载位置
-        String downloadPath = "/Volumes/wushuo/Software/J/JetBrains";
+        String downloadPath = "Z:\\Software\\J\\JetBrains";
 
         Gson gson = new Gson();
         JsonObject jsonObject = HttpRequest.get("https://data.services.jetbrains.com/products/releases")
@@ -115,7 +115,7 @@ public class Main {
                         System.out.println();
                         String tempSha256 = SecureUtil.sha256(tempFile);
                         if (!tempSha256.equals(sha256)) {
-                            System.out.println("下载失败: " + downloadUrl);
+                            System.out.println("sha256校验失败: " + downloadUrl);
                             return;
                         }
                         System.out.println(StrFormatter.format("下载完成：{}", downloadUrl));
